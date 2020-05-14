@@ -350,6 +350,18 @@ echo. >> %LogFileName%
 IF %DebugFlag% EQU 0 (
   call .\etlclient -p "[08-00]-PAS-FINANCIALS [Cash Flow]" -j "[00-00-01]-CashFlow Update Act & Fcast" -c CurrYear=%CurrYearFIN% Forecast_MMM=%FinFcastVer% >>%LogFileName%
 )
+GOTO StockCubeUpdate
+
+:: 2020-May-14 RKS Added Stock Cube Load
+:StockCubeUpdate
+for /f "tokens=*" %%i in ('time /t') do set Time_now=%%i
+for /f "tokens=*" %%i in ('date /t') do set Date_now=%%i
+echo ***  Stock Cube Update Job Now: %Date_now% %Time_now%  ***  >>%LogFileName%
+echo. >> %LogFileName%
+
+IF %DebugFlag% EQU 0 (
+  call .\etlclient -p "[11-00] -PAS-FINANCIALS [Stock]" -j "Stock Cube Nightly Load" >>%LogFileName%
+)
 GOTO PasStatPandLCheck
 
 :PasStatPandLCheck

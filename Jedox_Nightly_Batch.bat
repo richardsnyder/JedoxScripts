@@ -256,6 +256,16 @@ For /F "tokens=1,2,3,4 delims=/ " %%A in ('type  NextYear.txt') do (
 )
 echo NextYear  is %NextYear% >>%LogFileName%
 
+:: Capture Current ETL Period
+:: Loading Wholesale
+type ParameterCube.txt|findstr /I /c:"Current Period ETL" >CurrentPeriod.txt
+type CurrentPeriod.txt
+
+For /F "tokens=1,2,3,4 delims=/ " %%A in ('type  CurrentPeriod.txt') do (
+  Set CurrentPeriod=%%D
+)
+echo CurrentPeriod  is %CurrentPeriod% >>%LogFileName%
+
 :: Retail Weekly Sales Actuals
 :PasWklyRtlSalesActual
 :: There was NO error in the Financials Load Test Job
@@ -300,7 +310,7 @@ echo ***  Starting Wholesale Actuals Update Job Now: %Date_now% %Time_now%  *** 
 echo. >> %LogFileName%
 
 IF %DebugFlag% EQU 0 (
-  call .\etlclient -p "[10-00]-PAS-FINANCIALS [Wholesale]" -j "Wholesale Nightly Load">>%LogFileName%
+  call .\etlclient -p "[10-00]-PAS-FINANCIALS [Wholesale]" -j "Wholesale Nightly Load" >>%LogFileName%
 )
 GOTO PasDailyRtlSalesActual
 
@@ -415,11 +425,11 @@ set SubjectText="Missing Accounts in Stat P&L Hierarchy"
 echo $body = Get-Content -Path EmailBodyStatPandLCheck.txt ^| Out-String >%OutFile%
 
 if %DebugFlag% EQU 1 (
-  echo send-mailmessage -from ^"JedoxAdmin@pasco.com.au^" -to ^"RSnyder@pasco.com.au^" ,^"LMcInTyre@pasco.com.au^", -subject %SubjectText% -body $body -Attachment "%ParamFile%" -priority High -dno onFailure -smtpServer mtwrly01.onepas.local >>%OutFile%
+  echo send-mailmessage -from ^"JedoxAdmin@pasco.com.au^" -to ^"RSnyder@pasco.com.au^" ,^"MLau@pasco.com.au^" -subject %SubjectText% -body $body -Attachment "%ParamFile%" -priority High -dno onFailure -smtpServer mtwrly01.onepas.local >>%OutFile%
 )
 
 if %DebugFlag% EQU 0 (
-  echo send-mailmessage -from ^"JedoxAdmin@pasco.com.au^" -to ^"RSnyder@pasco.com.au^" ,^"LMcInTyre@pasco.com.au^" , ^"GSin@pasco.com.au^", ^"BMorris@pasco.com.au^" -subject %SubjectText% -body $body -Attachment "%ParamFile%" -priority High -dno onFailure -smtpServer mtwrly01.onepas.local >>%OutFile%
+  echo send-mailmessage -from ^"JedoxAdmin@pasco.com.au^" -to ^"RSnyder@pasco.com.au^" ,^"MLau@pasco.com.au^" -subject %SubjectText% -body $body -Attachment "%ParamFile%" -priority High -dno onFailure -smtpServer mtwrly01.onepas.local >>%OutFile%
 )
 :: Send the email using the file sendmail.ps1 which has just been "written" above
 Powershell.exe -executionpolicy remotesigned -File "C:\Program Files\Jedox\Jedox Suite\tomcat\client\sendmailstatpandlcheck.ps1"
@@ -480,11 +490,11 @@ set SubjectText="Missing Profit Centres in Review Concession Hierarchy"
 echo $body = Get-Content -Path EmailBodyStatPandLCheck.txt ^| Out-String >%OutFile%
 
 if %DebugFlag% EQU 1 (
-  echo send-mailmessage -from ^"JedoxAdmin@pasco.com.au^" -to ^"RSnyder@pasco.com.au^" ,^"LMcInTyre@pasco.com.au^" -subject %SubjectText% -body $body -Attachment "%ParamFile%" -priority High -dno onFailure -smtpServer mtwrly01.onepas.local >>%OutFile%
+  echo send-mailmessage -from ^"JedoxAdmin@pasco.com.au^" -to ^"RSnyder@pasco.com.au^" ,^"MLau@pasco.com.au^" -subject %SubjectText% -body $body -Attachment "%ParamFile%" -priority High -dno onFailure -smtpServer mtwrly01.onepas.local >>%OutFile%
 )
 
 if %DebugFlag% EQU 0 (
-  echo send-mailmessage -from ^"JedoxAdmin@pasco.com.au^" -to ^"RSnyder@pasco.com.au^" ,^"LMcInTyre@pasco.com.au^" -subject %SubjectText% -body $body -Attachment "%ParamFile%" -priority High -dno onFailure -smtpServer mtwrly01.onepas.local >>%OutFile%
+  echo send-mailmessage -from ^"JedoxAdmin@pasco.com.au^" -to ^"RSnyder@pasco.com.au^" ,^"MLau@pasco.com.au^" -subject %SubjectText% -body $body -Attachment "%ParamFile%" -priority High -dno onFailure -smtpServer mtwrly01.onepas.local >>%OutFile%
 )
 :: Send the email using the file sendmail.ps1 which has just been "written" above
 Powershell.exe -executionpolicy remotesigned -File "C:\Program Files\Jedox\Jedox Suite\tomcat\client\sendmailreviewconcessioncheck.ps1"

@@ -1,0 +1,2 @@
+$body = Get-Content -Path EmailBodyStatPandLCheck.txt | Out-String 
+send-mailmessage -from "JedoxAdmin@pasco.com.au" -to "RSnyder@pasco.com.au" ,"LMcInTyre@pasco.com.au" , "GSin@pasco.com.au", "BMorris@pasco.com.au" -subject "Missing Accounts in Stat P&L Hierarchy" -body $body -Attachment "C:\Program Files\Jedox\Jedox Suite\tomcat\client\StatPandLCheck.txt" -priority High -dno onFailure -smtpServer mtwrly01.onepas.local 

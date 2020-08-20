@@ -1,0 +1,2 @@
+$body = Get-Content -Path EmailBodyMon.txt | Out-String 
+send-mailmessage -from "JedoxAdmin@pasco.com.au" -to "RSnyder@pasco.com.au", "MKocenda@pasco.com.au" -subject "SalesDaily Data Warehouse Table Update Times are in the file attached." -body $body -Attachment "C:\Program Files\Jedox\Jedox Suite\tomcat\client\SailesDailyUpdate.txt" -priority High -dno onFailure -smtpServer mtwrly01.onepas.local 

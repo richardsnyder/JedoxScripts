@@ -1,0 +1,2 @@
+$body = Get-Content -Path EmailBodyTargetUpdate.txt | Out-String 
+send-mailmessage -from "JedoxAdmin@pasco.com.au" -to "RSnyder@pasco.com.au" ,"LMcInTyre@pasco.com.au" -subject "Jedox Retail Weekly Cube Target Load Completed with Warnings" -body $body -Attachment "C:\Program Files\Jedox\Jedox Suite\tomcat\client\BudgetLoadBatch-24-04-2018_10-44-07.log" -priority High -dno onFailure -smtpServer mtwrly01.onepas.local 

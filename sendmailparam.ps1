@@ -1,0 +1,2 @@
+$body = Get-Content -Path EmailBodyParam.txt | Out-String 
+send-mailmessage -from "JedoxAdmin@pasco.com.au" -to "RSnyder@pasco.com.au", "MLau@pasco.com.au" -subject "Updated #_Parameter Cube Week Value to WK08" -body $body -Attachment "C:\Program Files\Jedox\Jedox Suite\tomcat\client\ParameterCube.txt","C:\Program Files\Jedox\Jedox Suite\tomcat\client\ParameterBatch-17-08-2020_21-00-05.log" -priority High -dno onFailure -smtpServer mtwrly01.onepas.local 

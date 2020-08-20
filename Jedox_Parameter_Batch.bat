@@ -40,12 +40,16 @@ for /f "tokens=*" %%i in ('date /t') do set Date_now=%%i
 c:
 cd "C:\Program Files\Jedox\Jedox Suite\tomcat\client"
 
-
 echo ***  Start of Jedox Parameter Update batch: %Date_now% %Time_now%  ***  >> %LogFileName%
-echo ***  Retrieving SalesDaily Update Times Now: %Date_now% %Time_now%  ***  >>%LogFileName%
+echo ***  Updating Retail Reporting Week from DataWarehouse: %Date_now% %Time_now%  ***  >>%LogFileName%
 echo. >> %LogFileName%
 
 call .\etlclient -p "[99-00] Administrative Tasks" -j "[01-04]-load[Cube]:Parameter - Week" >>%LogFileName%
+
+echo ***  Loading Jedox Parameters into the DataWarehouse: %Date_now% %Time_now%  ***  >>%LogFileName%
+echo. >> %LogFileName%
+call .\etlclient -p "[99-00] Administrative Tasks" -j "[01-05]-load[DW]:Jedox_Parameters Table" >>%LogFileName%
+
 :: NOTE %ERRORLEVEL% is not returning the correct values everything is 0
 :: Search the log for Warnings, Failed, Error and set the error level accordingly
 type %LogFileName%|findstr /I /c:"Status: Failed"

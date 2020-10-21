@@ -372,6 +372,7 @@ echo. >> %LogFileName%
 IF %DebugFlag% EQU 0 (
   call .\etlclient -p "[11-00] -PAS-FINANCIALS [Stock]" -j "Stock Cube Nightly Load" >>%LogFileName%
 )
+
 GOTO PasStatPandLCheck
 
 :PasStatPandLCheck
@@ -531,6 +532,12 @@ goto SaveDatabase
 SET FinalReturnCode=0
 SET EmailReturnCode=0
 
+type %LogFileName%|findstr /I /c:" Status: Completed with Errors"
+IF %ERRORLEVEL% EQU 0 (
+  SET FinalReturnCode=3 
+  set EmailReturnCode=3
+)
+
 type %LogFileName%|findstr /I /c:"Status: Failed"
 IF %ERRORLEVEL% EQU 0 (
   SET FinalReturnCode=2 
@@ -565,16 +572,19 @@ call :dequote %LogFileName%
 :: HC:4 = The Financials update was successful but the Retail cube update failed
 
 IF %EmailReturnCode% EQU 0 (
-  set SubjectText="Results from Jedox Nightly Batch - All cube loads were successful"
+  set SubjectText="*** NEW SERVER *** Jedox Nightly Batch - All cube loads were successful"
 )
 IF %EmailReturnCode% EQU 1 (
-  set SubjectText="Results from Jedox Nightly Batch - The update completed with warnings, however the cubes were updated"
+  set SubjectText="*** NEW SERVER *** Jedox Nightly Batch - The update completed with warnings, however the cubes were updated"
 )
 IF %EmailReturnCode% EQU 2 (
-  set SubjectText="Results from Jedox Nightly Batch - The update failed! No Updates were Run! - Investigate NOW!"
+  set SubjectText="*** NEW SERVER *** Jedox Nightly Batch - The One of the Updates FAILED! - Investigate NOW!"
+)
+IF %EmailReturnCode% EQU 3 (
+  set SubjectText="*** NEW SERVER *** Jedox Nightly Batch - There were ERRORS in the Updates! - Investigate NOW!"
 )
 IF %EmailReturnCode% EQU 999 (
-  set SubjectText="Results from Jedox Nightly Batch - The Update of Paramters Failed! No Updates were Run! - Investigate NOW! "
+  set SubjectText="*** NEW SERVER *** Jedox Nightly Batch - The Update of Paramters Failed! No Updates were Run! - Investigate NOW! "
 )
 :: Generate the command to send an email with the results
 :: NOTE $body contains the body of the email message

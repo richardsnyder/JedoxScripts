@@ -572,19 +572,19 @@ call :dequote %LogFileName%
 :: HC:4 = The Financials update was successful but the Retail cube update failed
 
 IF %EmailReturnCode% EQU 0 (
-  set SubjectText="*** NEW SERVER *** Jedox Nightly Batch - All cube loads were successful"
+  set SubjectText="Jedox Nightly Batch - All cube loads were successful"
 )
 IF %EmailReturnCode% EQU 1 (
-  set SubjectText="*** NEW SERVER *** Jedox Nightly Batch - The update completed with warnings, however the cubes were updated"
+  set SubjectText="Jedox Nightly Batch - The update completed with warnings, however the cubes were updated"
 )
 IF %EmailReturnCode% EQU 2 (
-  set SubjectText="*** NEW SERVER *** Jedox Nightly Batch - The One of the Updates FAILED! - Investigate NOW!"
+  set SubjectText="Jedox Nightly Batch - The One of the Updates FAILED! - Investigate NOW!"
 )
 IF %EmailReturnCode% EQU 3 (
-  set SubjectText="*** NEW SERVER *** Jedox Nightly Batch - There were ERRORS in the Updates! - Investigate NOW!"
+  set SubjectText="Jedox Nightly Batch - There were ERRORS in the Updates! - Investigate NOW!"
 )
 IF %EmailReturnCode% EQU 999 (
-  set SubjectText="*** NEW SERVER *** Jedox Nightly Batch - The Update of Paramters Failed! No Updates were Run! - Investigate NOW! "
+  set SubjectText="Jedox Nightly Batch - The Update of Paramters Failed! No Updates were Run! - Investigate NOW! "
 )
 :: Generate the command to send an email with the results
 :: NOTE $body contains the body of the email message

@@ -382,6 +382,10 @@ for /f "tokens=*" %%i in ('date /t') do set Date_now=%%i
 echo ***  Starting Stat P and L Check Job Now: %Date_now% %Time_now%  ***  >>%LogFileName%
 echo. >> %LogFileName%
 
+if exist "C:\Program Files\Jedox\Jedox Suite\tomcat\client\StatPandLCheck.txt" (
+  del "C:\Program Files\Jedox\Jedox Suite\tomcat\client\StatPandLCheck.txt"
+)
+
 IF %DebugFlag% EQU 0 (
   call .\etlclient -p "[99-00] Administrative Tasks" -j "[01-14]-Stat PandL Check" >>%LogFileName%
 )
@@ -426,11 +430,11 @@ set SubjectText="Missing Accounts in Stat P&L Hierarchy"
 echo $body = Get-Content -Path EmailBodyStatPandLCheck.txt ^| Out-String >%OutFile%
 
 if %DebugFlag% EQU 1 (
-  echo send-mailmessage -from ^"JedoxAdmin@pasco.com.au^" -to ^"RSnyder@pasco.com.au^" ,^"MLau@pasco.com.au^" -subject %SubjectText% -body $body -Attachment "%ParamFile%" -priority High -dno onFailure -smtpServer mtwrly01.onepas.local >>%OutFile%
+  echo send-mailmessage -from ^"JedoxAdmin@pasco.com.au^" -to ^"RSnyder@pasco.com.au^" -subject %SubjectText% -body $body -Attachment "%ParamFile%" -priority High -dno onFailure -smtpServer mtwrly01.onepas.local >>%OutFile%
 )
 
 if %DebugFlag% EQU 0 (
-  echo send-mailmessage -from ^"JedoxAdmin@pasco.com.au^" -to ^"RSnyder@pasco.com.au^" ,^"MLau@pasco.com.au^" -subject %SubjectText% -body $body -Attachment "%ParamFile%" -priority High -dno onFailure -smtpServer mtwrly01.onepas.local >>%OutFile%
+  echo send-mailmessage -from ^"JedoxAdmin@pasco.com.au^" -to ^"RSnyder@pasco.com.au^" ,^"BMorris@pasco.com.au^",^"GSin@pasco.com.au^" -subject %SubjectText% -body $body -Attachment "%ParamFile%" -priority High -dno onFailure -smtpServer mtwrly01.onepas.local >>%OutFile%
 )
 :: Send the email using the file sendmail.ps1 which has just been "written" above
 Powershell.exe -executionpolicy remotesigned -File "C:\Program Files\Jedox\Jedox Suite\tomcat\client\sendmailstatpandlcheck.ps1"
@@ -572,19 +576,19 @@ call :dequote %LogFileName%
 :: HC:4 = The Financials update was successful but the Retail cube update failed
 
 IF %EmailReturnCode% EQU 0 (
-  set SubjectText="Jedox Nightly Batch - All cube loads were successful"
+  set SubjectText="*** NEW SERVER *** Jedox Nightly Batch - All cube loads were successful"
 )
 IF %EmailReturnCode% EQU 1 (
-  set SubjectText="Jedox Nightly Batch - The update completed with warnings, however the cubes were updated"
+  set SubjectText="*** NEW SERVER *** Jedox Nightly Batch - The update completed with warnings, however the cubes were updated"
 )
 IF %EmailReturnCode% EQU 2 (
-  set SubjectText="Jedox Nightly Batch - The One of the Updates FAILED! - Investigate NOW!"
+  set SubjectText="*** NEW SERVER *** Jedox Nightly Batch - The One of the Updates FAILED! - Investigate NOW!"
 )
 IF %EmailReturnCode% EQU 3 (
-  set SubjectText="Jedox Nightly Batch - There were ERRORS in the Updates! - Investigate NOW!"
+  set SubjectText="*** NEW SERVER *** Jedox Nightly Batch - There were ERRORS in the Updates! - Investigate NOW!"
 )
 IF %EmailReturnCode% EQU 999 (
-  set SubjectText="Jedox Nightly Batch - The Update of Paramters Failed! No Updates were Run! - Investigate NOW! "
+  set SubjectText="*** NEW SERVER *** Jedox Nightly Batch - The Update of Paramters Failed! No Updates were Run! - Investigate NOW! "
 )
 :: Generate the command to send an email with the results
 :: NOTE $body contains the body of the email message
